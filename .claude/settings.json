@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.mcp-servers/youtube/package.json\" ] && [ ! -d \"$CLAUDE_PROJECT_DIR/.mcp-servers/youtube/node_modules\" ]; then npm install --prefix \"$CLAUDE_PROJECT_DIR/.mcp-servers/youtube\" --no-audit --no-fund >/tmp/youtube-mcp-install.log 2>&1 || echo 'youtube-mcp: npm install failed, see /tmp/youtube-mcp-install.log' >&2; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

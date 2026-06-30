@@ -1,0 +1,14 @@
+{
+  "name": "rsyt-youtube-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Working MCP entrypoint for ZubeidHendricks/youtube-mcp-server (the published npm dist ships a broken MCP glue layer; this wraps the package's service classes with a correct @modelcontextprotocol/sdk server).",
+  "type": "commonjs",
+  "bin": {
+    "rsyt-youtube-mcp": "index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zubeid-youtube-mcp-server": "1.0.0"
+  }
+}
