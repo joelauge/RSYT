@@ -14,6 +14,28 @@
  * Requires the YOUTUBE_API_KEY environment variable (a YouTube Data API v3 key).
  */
 
+const fs = require("fs");
+const path = require("path");
+
+// Load a git-ignored .env next to this file as a fallback, so the key reaches
+// the server reliably even when host env-var expansion is unset/incorrect.
+// Real process env always wins over the file.
+(function loadLocalEnv() {
+  try {
+    const envPath = path.join(__dirname, ".env");
+    const raw = fs.readFileSync(envPath, "utf8");
+    for (const line of raw.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+      if (!m) continue;
+      const key = m[1];
+      let val = m[2].trim().replace(/^(['"])(.*)\1$/, "$2");
+      if (!process.env[key]) process.env[key] = val;
+    }
+  } catch (_) {
+    /* no .env file — rely on the process environment */
+  }
+})();
+
 const { Server } = require("@modelcontextprotocol/sdk/server/index.js");
 const { StdioServerTransport } = require("@modelcontextprotocol/sdk/server/stdio.js");
 const {
