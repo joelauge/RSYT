@@ -50,6 +50,39 @@ automatically in fresh Claude Code web sessions. To install manually:
 npm install --prefix .mcp-servers/youtube
 ```
 
+## Quota
+
+The YouTube Data API gives each Google Cloud **project** a default **10,000
+units/day**, resetting at **midnight Pacific (08:00 UTC)**. Cost is per
+*operation*, not per item returned:
+
+| Operation (tools using it)                              | Units |
+|---------------------------------------------------------|-------|
+| `search.list` (`videos_searchVideos`, `videos_getRelated`, `playlists_searchPlaylists`, `channels_listVideos`) | **100** |
+| `videos.list` (`videos_getVideo`, `videos_getStats`, `videos_getTrending`) | 1 |
+| `channels.list` (`channels_getChannel`, `channels_getStatistics`) | 1 |
+| `playlists.list` / `playlistItems.list` (`*_getPlaylist*`, `channels_getPlaylists`) | 1 |
+| transcript tools (not the Data API — scrapes captions) | 0 |
+
+So ~100 search calls exhaust a full day's quota, while thousands of
+video/channel/playlist lookups barely dent it. Search is the expensive verb.
+
+**Check usage:** Google Cloud Console → *APIs & Services → YouTube Data API v3*
+→ **Quotas** (current consumption + limits) and **Metrics → Traffic by API
+method** (which call is burning it). If usage is high and you don't recognize
+it, another app/integration is sharing this key or project.
+
+**Probe the key any time** (reports working / over-quota / invalid):
+
+```bash
+node .mcp-servers/youtube/quota-check.js [channelId]
+```
+
+**Need more?** Console → Quotas → select the limit → *Edit / Apply for higher
+quota* (YouTube's Audit & Quota Extension form). Approval is manual and can take
+days. Cheaper first: cache results and avoid `search.list` where a 1-unit
+lookup works.
+
 ## Tools
 
 `videos_getVideo`, `videos_searchVideos`, `videos_getStats`, `videos_getTrending`,
